@@ -249,12 +249,12 @@ if st.session_state.current_mode == "ピッチ加点":
                 st.button("✖", key=f"del_btn_{item_id}", help="この行を削除", on_click=remove_pitch_item, args=(item_id,))
 
             if is_invalid:
-                st.warning(f"⚠️ PitchDiff「{diff_val}」はダメだよ。0〜50の範囲で入力してね。(この行は計算から除外されます)")
+                st.warning(f"⚠️ 0〜50の範囲で入力してください。(この行は計算から除外されます)")
 
         st.button("➕ PitchDiffを追加", on_click=add_pitch_item)
 
     with right_col:
-        st.subheader("📊 各パラメータの内訳")
+        st.subheader("各パラメータの内訳")
         table_data = []
         valid_frames_total = 0
 
@@ -308,7 +308,7 @@ if st.session_state.current_mode == "ピッチ加点":
 
 
 elif st.session_state.current_mode == "揺れの規則性&悪いビブ":
-    st.header("✨ 揺れの規則性 ＆ 📉 悪いビブラート減点 設定")
+    st.header("揺れの規則性 ＆ 悪いビブラート減点 設定")
     st.markdown("各THD（0〜49%）とフレーム数を設定してください。（THDの値は0〜49の範囲で自由に編集でき、項目の増減も可能です）")
 
     left_col, right_col = st.columns([4.5, 5.5])
@@ -339,7 +339,7 @@ elif st.session_state.current_mode == "揺れの規則性&悪いビブ":
                 st.button("✖", key=f"del_thd_btn_{item_id}", help="この行を削除", on_click=remove_thd_item, args=(item_id,))
 
             if is_invalid:
-                st.warning(f"⚠️ THD「{thd_val}」はダメだよ。0〜49の範囲で入力してね。(この行は計算から除外されます)")
+                st.warning(f"⚠️ 0〜49の範囲で入力してください。(この行は計算から除外されます)")
 
         st.button("➕ THDを追加", on_click=add_thd_item)
 
@@ -407,14 +407,14 @@ elif st.session_state.current_mode == "揺れの規則性&悪いビブ":
     st.markdown("<br>", unsafe_allow_html=True)
     
     res_cols2 = st.columns(2)
-    res_cols2[0].metric("✨ 揺れの規則性加点", f"{final_thd_bonus:,}")
-    res_cols2[1].metric("📉 悪いビブラート減点", f"{bad_vib_penalty:,}")
+    res_cols2[0].metric("揺れの規則性加点", f"{final_thd_bonus:,}")
+    res_cols2[1].metric("悪いビブラート減点", f"{bad_vib_penalty:,}")
 
     st.latex(r"THDBonus = \lfloor (\frac{THDGoodCount}{THDGoodCount + THDBadCount}) \times 1000 \rfloor \times 24")
     st.latex(r"Z = \lfloor (\frac{THDPenaltyFrameCount}{TotalFrame}) \times THDMedian \times 100 \rfloor \times 40")
 
 elif st.session_state.current_mode == "第二の減点":
-    st.header("📉 第二の減点 詳細")
+    st.header("第二の減点 詳細")
     st.markdown("ここでは、ロングトーンとビブラートのどちらを優先して評価するかを判定し、減点幅（W）を算出します。")
 
     # 1. 必要なデータを各計算関数から取得
@@ -425,7 +425,7 @@ elif st.session_state.current_mode == "第二の減点":
     thd_med = thd_res[5]
 
     # 2. 導出値の表示
-    st.subheader("📊 判定に使用するパラメータ")
+    st.subheader("判定に使用するパラメータ")
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("NotePenaltyFrameCount", f"{npf:,}")
     col2.metric("THDPenaltyFrameCount", f"{thd_npf:,}")
@@ -435,22 +435,22 @@ elif st.session_state.current_mode == "第二の減点":
     st.divider()
 
     # 3. 判定ロジックと減点幅(W)の表示
-    st.subheader("⚙️ 算出プロセス")
+    st.subheader("算出プロセス")
     if npf == 0 and thd_npf == 0:
         st.warning("データが入力されていません。")
     elif thd_npf < npf:
         w = math.floor(npw / npf) * 965 if npf > 0 else 0
         st.success("判定モード: **ロングトーン優先** (THD < Note)")
         st.latex(r"W = \lfloor \frac{NotePenaltyWeightedCount}{NotePenaltyFrameCount} \rfloor \times 965")
-        st.metric("💥 第二の減点幅 (W)", f"{w:,}")
+        st.metric("第二の減点幅 (W)", f"{w:,}")
     else:
         w = math.floor(thd_med * 0.8) * 965
         st.success("判定モード: **ビブラート優先** (THD ≧ Note)")
         st.latex(r"W = \lfloor THDMedian \times 0.8 \rfloor \times 965")
-        st.metric("💥 第二の減点幅 (W)", f"{w:,}")
+        st.metric("第二の減点幅 (W)", f"{w:,}")
 
 elif st.session_state.current_mode == "全体を見る":
-    st.header("📊 全体評価サマリー")
+    st.header("全体評価サマリー")
     
     # --- 1. 各種データの再計算 ---
     _, _, npf, npw, pitch_bonus = calculate_secret_pitch_bonus(st.session_state.pitch_items)
@@ -478,19 +478,19 @@ elif st.session_state.current_mode == "全体を見る":
 
     # --- 5. ダッシュボード表示 ---
     col1, col2, col3, col4 = st.columns(4)
-    col1.metric("✨ ピッチ加点 (X)", f"{pitch_bonus:,}")
-    col2.metric("✨ 揺れの規則性加点 (Y)", f"{thd_bonus:,}")
-    col3.metric("📉 悪いビブラート減点 (Z)", f"{bad_vib:,}")
-    col4.metric("📉 第二の減点 (W)", f"{w:,}")
+    col1.metric("ピッチ加点 (X)", f"{pitch_bonus:,}")
+    col2.metric("揺れの規則性加点 (Y)", f"{thd_bonus:,}")
+    col3.metric("悪いビブラート減点 (Z)", f"{bad_vib:,}")
+    col4.metric("第二の減点 (W)", f"{w:,}")
     
     st.divider()
     
     # Furueと安定性スコアを横並びで表示
     res_col1, res_col2, res_col3 = st.columns([1, 1, 2])
     with res_col1:
-        st.metric("🎯 Furue", f"{furue:,}")
+        st.metric("Furue", f"{furue:,}")
     with res_col2:
-        st.metric("📊 安定性スコア", f"{estimated_stability:.3f}")
+        st.metric("安定性スコア", f"{estimated_stability:.3f}")
     with res_col3:
         st.latex(r"Furue = \min(45570 + X + Y - Z - W, 100000)")
 
@@ -498,5 +498,5 @@ elif st.session_state.current_mode == "全体を見る":
 
 
 else:
-    st.header(f"🚧 {st.session_state.current_mode} 設定")
+    st.header(f" {st.session_state.current_mode} 設定")
     st.info("この機能は現在実装待ちです。")
