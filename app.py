@@ -218,7 +218,7 @@ st.divider()
 # 4. 各モードごとの画面描画
 # ---------------------------------------------------------
 if st.session_state.current_mode == "ピッチ加点":
-    st.header("🎵 ピッチ加点 設定")
+    st.header("ピッチ加点 設定")
     st.markdown("各PitchDiffとフレーム数を設定してください。（PitchDiffの値は0〜50の範囲で自由に編集でき、項目の増減も可能です）")
 
     left_col, right_col = st.columns([4.5, 5.5])
@@ -344,7 +344,7 @@ elif st.session_state.current_mode == "揺れの規則性&悪いビブ":
         st.button("➕ THDを追加", on_click=add_thd_item)
 
     with right_col:
-        st.subheader("📊 各パラメータの内訳")
+        st.subheader("各パラメータの内訳")
         table_data = []
         valid_frames_total = 0
 
