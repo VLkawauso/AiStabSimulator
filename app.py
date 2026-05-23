@@ -389,10 +389,10 @@ elif st.session_state.current_mode == "揺れの規則性&悪いビブ":
         # ここに TotalFrame スライダーを移動
         st.session_state.total_frame = st.slider(
             "TotalFrame (曲全体の発声フレーム数)",
-            min_value=1,
-            max_value=50000,
+            min_value=0,
+            max_value=500000,
             value=st.session_state.total_frame,
-            step=100
+            step=1000
         )
 
     st.divider()
