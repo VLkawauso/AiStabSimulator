@@ -19,7 +19,7 @@ if "total_frame" not in st.session_state:
 # --- ピッチ加点用ステート ---
 if "pitch_items" not in st.session_state:
     st.session_state.pitch_items = [
-        {"id": 0, "diff": 0, "frames": 1000},
+        {"id": 0, "diff": 0, "frames": 100},
         {"id": 1, "diff": 10, "frames": 0},
         {"id": 2, "diff": 20, "frames": 0},
         {"id": 3, "diff": 30, "frames": 0},
@@ -37,7 +37,7 @@ else:
 # --- 揺れの規則性用ステート ---
 if "thd_items" not in st.session_state:
     st.session_state.thd_items = [
-        {"id": 0, "thd": 0, "frames": 1000},
+        {"id": 0, "thd": 0, "frames": 100},
         {"id": 1, "thd": 2, "frames": 0},
         {"id": 2, "thd": 5, "frames": 0},
         {"id": 3, "thd": 20, "frames": 0},
@@ -244,7 +244,7 @@ if st.session_state.current_mode == "ピッチ加点":
             with col_diff:
                 st.number_input("Diff", value=diff_val, step=1, key=f"diff_input_{item_id}", label_visibility="collapsed", on_change=update_pitch_item, args=(item_id,))
             with col_slider:
-                st.slider("Frames", min_value=0, max_value=10000, value=frames_val, step=100, key=f"frames_input_{item_id}", label_visibility="collapsed", on_change=update_pitch_item, args=(item_id,))
+                st.slider("Frames", min_value=0, max_value=1000, value=frames_val, step=10, key=f"frames_input_{item_id}", label_visibility="collapsed", on_change=update_pitch_item, args=(item_id,))
             with col_del:
                 st.button("✖", key=f"del_btn_{item_id}", help="この行を削除", on_click=remove_pitch_item, args=(item_id,))
 
@@ -334,7 +334,7 @@ elif st.session_state.current_mode == "揺れの規則性&悪いビブ":
             with col_thd:
                 st.number_input("THD", value=thd_val, step=1, key=f"thd_input_{item_id}", label_visibility="collapsed", on_change=update_thd_item, args=(item_id,))
             with col_slider:
-                st.slider("Frames", min_value=0, max_value=10000, value=frames_val, step=100, key=f"thd_frames_input_{item_id}", label_visibility="collapsed", on_change=update_thd_item, args=(item_id,))
+                st.slider("Frames", min_value=0, max_value=1000, value=frames_val, step=10, key=f"thd_frames_input_{item_id}", label_visibility="collapsed", on_change=update_thd_item, args=(item_id,))
             with col_del:
                 st.button("✖", key=f"del_thd_btn_{item_id}", help="この行を削除", on_click=remove_thd_item, args=(item_id,))
 
