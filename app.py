@@ -349,19 +349,18 @@ elif st.session_state.current_mode == "揺れの規則性&悪いビブ":
         for item in st.session_state.thd_items:
             thd, val = item["thd"], item["frames"]
             if thd < 0 or thd > 49:
-                table_data.append({"THD(%)": f"THD = {thd} (無効)", "フレーム数": val, "THDGood": "-", "THDBad": "-", "PenFrame": "-"})
+                table_data.append({"THD(%)": f"THD = {thd} (無効)", "ビブフレーム数": val, "THD良": "-", "THD悪": "-"})
                 continue
             
             valid_frames_total += val
             good = val if 0 <= thd <= 12 else 0
             bad = val if 13 <= thd <= 40 else 0
-            pen_frame = val
             
-            table_data.append({"THD(%)": f"THD = {thd}", "フレーム数": val, "THDGood": good, "THDBad": bad, "PenFrame": pen_frame})
+            table_data.append({"THD(%)": f"THD = {thd}", "ビブフレーム数": val, "THD良": good, "THD悪": bad})
         
         good_cnt, bad_cnt, pen_frame_cnt, hist_cnt, final_thd_bonus, thd_median, bad_vib_penalty = calculate_secret_thd_bonus(st.session_state.thd_items, st.session_state.total_frame)
 
-        table_data.append({"THD(%)": "合計", "フレーム数": valid_frames_total, "THDGood": good_cnt, "THDBad": bad_cnt, "PenFrame": pen_frame_cnt})
+        table_data.append({"THD(%)": "合計", "ビブフレーム数": valid_frames_total, "THD良": good_cnt, "THD悪": bad_cnt})
         df = pd.DataFrame(table_data)
 
         def style_thd(val):
@@ -380,13 +379,13 @@ elif st.session_state.current_mode == "揺れの規則性&悪いビブ":
         except AttributeError: styled_df = df.style.applymap(style_thd, subset=["THD(%)"])
 
         def format_number(x): return f"{int(x):,}" if isinstance(x, (int, float)) else x
-        for col in ["フレーム数", "THDGood", "THDBad", "PenFrame"]: styled_df = styled_df.format({col: format_number})
+        for col in ["ビブフレーム数", "THD良", "THD悪"]: styled_df = styled_df.format({col: format_number})
         st.dataframe(styled_df, use_container_width=True, hide_index=True)
 
         st.divider()
         # ここに TotalFrame スライダーを移動
         st.session_state.total_frame = st.slider(
-            "TotalFrame (曲全体の発声フレーム数)",
+            "TotalFrame (有声フレーム数)",
             min_value=0,
             max_value=50000,
             value=st.session_state.total_frame,
