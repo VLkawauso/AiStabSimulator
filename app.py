@@ -256,23 +256,21 @@ if st.session_state.current_mode == "ピッチ加点":
     with right_col:
         st.subheader("各パラメータの内訳")
         table_data = []
-        valid_frames_total = 0
 
         for item in st.session_state.pitch_items:
             diff, val = item["diff"], item["frames"]
             if diff < 0 or diff > 50:
-                table_data.append({"PitchDiff": f"Diff = {diff} (無効)", "フレーム": val, "ピッチ良": "-", "ピッチ悪": "-", "ピッチフレーム数": "-", "ピッチ減点累積": "-"})
+                table_data.append({"PitchDiff": f"Diff = {diff} (無効)", "ピッチフレーム数": "-", "ピッチ良": "-", "ピッチ悪": "-", "ピッチ減点累積": "-"})
                 continue
             
-            valid_frames_total += val
             good = 10 * val if diff <= 15 else ((25 - diff) * val if 16 <= diff <= 24 else 0)
             bad = 10 * val if diff >= 25 else 0
             
-            table_data.append({"PitchDiff": f"Diff = {diff}", "フレーム": val, "ピッチ良": good, "ピッチ悪": bad, "ピッチフレーム数": val, "ピッチ減点累積": diff * val})
+            table_data.append({"PitchDiff": f"Diff = {diff}", "ピッチフレーム数": val, "ピッチ良": good, "ピッチ悪": bad, "ピッチ減点累積": diff * val})
         
         good_cnt, bad_cnt, pen_frame_cnt, pen_weight_cnt, final_bonus = calculate_secret_pitch_bonus(st.session_state.pitch_items)
 
-        table_data.append({"PitchDiff": "合計", "フレーム": valid_frames_total, "ピッチ良": good_cnt, "ピッチ悪": bad_cnt, "ピッチフレーム数": pen_frame_cnt, "ピッチ減点累積": pen_weight_cnt})
+        table_data.append({"PitchDiff": "合計", "ピッチフレーム数": pen_frame_cnt, "ピッチ良": good_cnt, "ピッチ悪": bad_cnt, "ピッチ減点累積": pen_weight_cnt})
         df = pd.DataFrame(table_data)
 
         def style_pitchdiff(val):
@@ -292,7 +290,7 @@ if st.session_state.current_mode == "ピッチ加点":
         except AttributeError: styled_df = df.style.applymap(style_pitchdiff, subset=["PitchDiff"])
 
         def format_number(x): return f"{int(x):,}" if isinstance(x, (int, float)) else x
-        for col in ["フレーム", "ピッチ良", "ピッチ悪", "ピッチフレーム数", "ピッチ減点累積"]: styled_df = styled_df.format({col: format_number})
+        for col in ["ピッチフレーム数", "ピッチ良", "ピッチ悪", "ピッチ減点累積"]: styled_df = styled_df.format({col: format_number})
         st.dataframe(styled_df, use_container_width=True, hide_index=True)
 
     st.divider()
