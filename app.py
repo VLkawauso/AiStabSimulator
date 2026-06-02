@@ -382,7 +382,7 @@ elif st.session_state.current_mode == "揺れの規則性&悪いビブ":
         except AttributeError: styled_df = df.style.applymap(style_thd, subset=["THD(%)"])
 
         def format_number(x): return f"{int(x):,}" if isinstance(x, (int, float)) else x
-        for col in ["フレーム数", "THDGood", "THDBad", "PenFrame"]: styled_df = styled_df.format({col: format_number})
+        for col in ["フレーム数", "THD良", "THD悪", "ビブフレーム数"]: styled_df = styled_df.format({col: format_number})
         st.dataframe(styled_df, use_container_width=True, hide_index=True)
 
         st.divider()
